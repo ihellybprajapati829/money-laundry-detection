@@ -61,6 +61,8 @@ Confusion matrix (all features):
 - Cryptocurrency data is a proxy; real bank transaction data would differ.
 
 ## How to run
-pip install pandas scikit-learn xgboost matplotlib seaborn jupyter
+
+### Install dependencies
+pip install -r requirements.txt
 
 Put the three Elliptic CSV files in data/raw/ folder, then run the notebooks in order (data_exploration, baseline_model).
