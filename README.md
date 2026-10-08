@@ -40,7 +40,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Run the notebooks in order
+#### Download Datasets from Kaggle
+- Download 3 csv files from: https://www.kaggle.com/datasets/ellipticco/elliptic-data-set
+- Paste 3 csv in data/raw file
+
+#### Run the notebooks in order
 Open each notebook from the `notebooks/` folder and use **Run All**. Each stage depends on the one before it.
 
 | Stage | Notebook | What it does | Needs | Produces |
@@ -53,7 +57,7 @@ Open each notebook from the `notebooks/` folder and use **Run All**. Each stage 
 
 Stage 5 must be run after stage 4, because it reads the file stage 4 saves.
 
-### Project structure
+#### Project structure
 ```
 money-laundry-detection/
 ├── data/raw/          # Elliptic CSVs
