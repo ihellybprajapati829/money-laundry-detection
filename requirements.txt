@@ -6,4 +6,4 @@ matplotlib==3.10.6
 seaborn==0.13.2
 jupyter==1.1.1
 torch==2.14.1
-torch-geometric==2.8.0
+torch-geometric==2.8.0.post1
