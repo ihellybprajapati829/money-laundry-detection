@@ -24,7 +24,7 @@ Illicit transactions are rare, so a useful detection model must find them withou
 ##### Elliptic Dataset
 ##### Source: https://www.kaggle.com/datasets/ellipticco/elliptic-data-set
 - Elliptic Bitcoin dataset: 203,769 transactions (nodes) linked by payment flows (edges), across 49 time steps
-- 165 anonymised features per transaction. Per the dataset documentation, the first 94 features represent local information about the transaction, and the remaining 72 features are aggregated features, obtained using transaction information one-hop backward/forward from the center node - giving the maximum, minimum, standard deviation and correlation coefficients of the neighbour transactions for the same information data
+- 165 anonymised features per transaction. Per the dataset documentation, the first 93 features represent local information about the transaction, and the remaining 72 features are aggregated features, obtained using transaction information one-hop backward/forward from the center node - giving the maximum, minimum, standard deviation and correlation coefficients of the neighbour transactions for the same information data
 - Only 46,564 transactions are labelled (illicit or licit); the rest are
   unknown and were excluded from this stage
 
@@ -74,8 +74,6 @@ Put the three Elliptic CSV files in data/raw/ folder, then run the notebooks in 
 
 **Questions**
 1. Does network structure improve illicit detection beyond a tabular model?
-2. How does performance change across time steps?
-3. What precision/recall trade-off is achievable at realistic review capacity?
 
 ### Method 
 - Graph: all 203,769 transactions as nodes and the payment-flow edges converted to undirected. 
@@ -101,9 +99,9 @@ Overall GCN accuracy was 0.95, which again says little on imbalanced data.
 
 
 ### Limitations
-- One run, one seed, no validation set, fixed 200 iterations and no hyperparameter tuning. Differences among a few samples could be noise. 
+- One run, one seed, no validation set, fixed 200 epochs and no hyperparameter tuning. Differences among a few points could be noise. 
 - Transductive setup: the entire graph, including features of test period nodes, is known during training, but not the test labels. 
-- The fixed 0.5 decision threshold affects precision and recall; threshold-free metrics are planned. 
+- The fixed 0.5 decision threshold affects precision and recall; threshold-free metrics are reported(PR-AUC). 
 
 
 
@@ -125,3 +123,14 @@ Same graph, features, split, class weighting, hyperparameters and seed as the GC
 ### Interpretation
 - GraphSAGE scored about 0.04 higher F1 than the GCN, but it is one seed, so this gap may be noise. It still trails XGBoost by a wide margin, again mainly through lower precision (0.68 vs 0.91).
 - A possible reason for GraphSAGE's small gain is that it preserves a node's own features.
+
+
+### Threshold-independent comparison (PR-AUC, test set)
+
+| Model | PR-AUC |
+|---|---|
+| XGBoost (all features) | 0.801 |
+| GraphSAGE (single run) | 0.715 |
+| GCN (single run) | 0.591 |
+
+XGBoost ranks illicit transactions better than both GNNs, so the gap is not only an effect of the 0.5 decision threshold or of class weighting. GraphSAGE is closer to XGBoost than the GCN is, but each GNN is a single run.
