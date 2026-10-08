@@ -66,3 +66,41 @@ Confusion matrix (all features):
 pip install -r requirements.txt
 
 Put the three Elliptic CSV files in data/raw/ folder, then run the notebooks in order (data_exploration, baseline_model).
+
+
+
+
+## Stage 2 : Graph Convolutional Network (GCN)
+
+**Questions**
+1. Does network structure improve illicit detection beyond a tabular model?
+2. How does performance change across time steps?
+3. What precision/recall trade-off is achievable at realistic review capacity?
+
+### Method 
+- Graph: all 203,769 transactions as nodes and the payment-flow edges converted to undirected. 
+- Features: the same 165 anonymised features used for the baseline. 
+- Split: same as the baseline (train on time steps 1-34, test on 35-49) 
+- Model: 2-layer GCN, 200 epochs, seed 42. 
+- Class imbalance: cross-entropy loss with the illicit class weighted by the licit-to-illicit ratio in the training data 7.63.
+
+
+### Results
+
+| Model | Illicit precision | Illicit recall | Illicit F1 |
+|---|---|---|---|
+| XGBoost (all 165 features) | 0.91 | 0.72 | 0.81 |
+| GCN (single run, untuned) | 0.62 | 0.63 | 0.63 |
+
+Overall GCN accuracy was 0.95, which again says little on imbalanced data. 
+
+
+### Interpretation
+- The basic GCN could not surpass the tree benchmark: the illicit set F1 score was 0.63 compared to 0.81, mainly due to a difference in precision (0.62 vs. 0.91).
+- Potential reasons (not yet tested): neighbour averaging may blur the transaction-level signal, the model may be undertrained, and the neighbour-aggregated features may already provide XGBoost with most of the network information.
+
+
+### Limitations
+- One run, one seed, no validation set, fixed 200 iterations and no hyperparameter tuning. Differences among a few samples could be noise. 
+- Transductive setup: the entire graph, including features of test period nodes, is known during training, but not the test labels. 
+- The fixed 0.5 decision threshold affects precision and recall; threshold-free metrics are planned. 
