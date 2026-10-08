@@ -104,3 +104,24 @@ Overall GCN accuracy was 0.95, which again says little on imbalanced data.
 - One run, one seed, no validation set, fixed 200 iterations and no hyperparameter tuning. Differences among a few samples could be noise. 
 - Transductive setup: the entire graph, including features of test period nodes, is known during training, but not the test labels. 
 - The fixed 0.5 decision threshold affects precision and recall; threshold-free metrics are planned. 
+
+
+
+
+## Stage 3 : GraphSAGE
+
+Same graph, features, split, class weighting, hyperparameters and seed as the GCN. The only change is the layer type: GraphSAGE keeps a node's own features separate from the aggregate of its neighbours', whereas a GCN layer averages them together.
+
+
+### Results
+
+| Model | Illicit precision | Illicit recall | Illicit F1 |
+|---|---|---|---|
+| XGBoost (all 165 features) | 0.91 | 0.72 | 0.81 |
+| GCN (single run, untuned) | 0.62 | 0.63 | 0.63 |
+| GraphSAGE (single run, untuned) | 0.68 | 0.65 | 0.67 |
+
+
+### Interpretation
+- GraphSAGE scored about 0.04 higher F1 than the GCN, but it is one seed, so this gap may be noise. It still trails XGBoost by a wide margin, again mainly through lower precision (0.68 vs 0.91).
+- A possible reason for GraphSAGE's small gain is that it preserves a node's own features.
