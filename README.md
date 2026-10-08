@@ -70,13 +70,13 @@ money-laundry-detection/
 
 ## 1. XGBoost
 
-## Method
+### Method
 1. Data quality checks: 0 missing values, 0 duplicate rows or transaction IDs, all 165 features numeric (float64). Features appear already standardised, so no scaling was needed for models.
 2. Time-based split: trained on time steps 1-34, tested on 35-49. This mimics predicting future transactions from past ones which is more realistic than a random split.
 3. Model: XGBoost (100 trees, max depth 6), used default settings, no tuning.
 4. Evaluation: precision, recall and F1 on the illicit class.
 
-## Results (test set: 16,670 transactions, 1,083 illicit)
+### Results (test set: 16,670 transactions, 1,083 illicit)
 
 | Model | Illicit precision | Illicit recall | Illicit F1 |
 |---|---|---|---|
@@ -90,13 +90,13 @@ Confusion matrix (all features):
 
 ![Confusion matrix](image.png)
 
-## Key findings
+### Key findings
 - Precision is high (0.91): when the model flags a transaction, it is right about 9 times in 10, so investigators see few false alarms.
 - Recall is lower (0.72): roughly 1 in 4 illicit transactions is missed. In a real compliance setting this precision/recall trade-off is the central design decision.
 - Neighbour-aggregated features add a modest improvement (F1 0.77 to 0.81, mostly via precision), so surrounding-transaction information carries some signal, but a tabular model already captures most of it.
 - feature_5 has the highest importance (~0.5), yet removing it barely changes performance (F1 0.80). Other features carry overlapping information, so importance scores alone should not be read as "this feature is essential".
 
-## Limitations
+### Limitations
 - Results come from a single run and a single time split, with no hyperparameter tuning or confidence intervals; differences of about 0.01 F1 are within noise.
 - Features are anonymised, so findings are reported by feature number and cannot be interpreted in business terms.
 - Feature importance describes what the model used, not what causes illicit behaviour.
